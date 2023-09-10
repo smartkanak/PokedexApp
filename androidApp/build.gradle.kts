@@ -1,15 +1,16 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    id("org.jetbrains.compose")
 }
 
 android {
     namespace = "com.example.pokedexapp.android"
-    compileSdk = 33
+    compileSdk = (findProperty("android.compileSdk") as String).toInt()
     defaultConfig {
         applicationId = "com.example.pokedexapp.android"
-        minSdk = 29
-        targetSdk = 33
+        minSdk = (findProperty("android.minSdk") as String).toInt()
+        targetSdk = (findProperty("android.targetSdk") as String).toInt()
         versionCode = 1
         versionName = "1.0"
     }
