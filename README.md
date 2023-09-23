@@ -1,5 +1,9 @@
 # PokedexApp
 
-This is a pokedex app using KMM, using the [PokeAPI](https://pokeapi.co/) to display information about pokemon.
+This is a pokedex app using KMP (Kotlin Multiplatform), using the [PokeAPI](https://pokeapi.co/) api to display information about pokemon.
 
-UI Inspiration: [Dribbble](https://dribbble.com/shots/16833947-Mobile-Pokedex-App-Design-Exploration)
+UI Inspiration: [Sulis Triyono](https://dribbble.com/shots/16833947-Mobile-Pokedex-App-Design-Exploration)
+
+## Screenshot of current version:
+
+![Screenshot of Pokemon Card Grid](ressources/images/PokemonListView.png)
