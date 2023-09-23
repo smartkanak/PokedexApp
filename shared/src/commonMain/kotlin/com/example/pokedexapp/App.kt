@@ -2,6 +2,7 @@ package com.example.pokedexapp
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -18,6 +19,8 @@ import com.example.pokedexapp.listview.data.model.PokemonList
 import com.example.pokedexapp.listview.ui.viewmodel.PokemonListViewModel
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
+import io.kamel.image.KamelImage
+import io.kamel.image.asyncPainterResource
 
 @Composable
 fun App() {
@@ -50,5 +53,13 @@ fun PokedexApp(
 
 @Composable
 fun PokemonCard(pokemon: PokemonList.PokemonPointer) {
-    Text(pokemon.name)
+    Column {
+        Text(pokemon.name)
+        Text(pokemon.url)
+        Text(pokemon.id.toString())
+        KamelImage(
+            asyncPainterResource(pokemon.image),
+            contentDescription = "Pokemon image"
+        )
+    }
 }

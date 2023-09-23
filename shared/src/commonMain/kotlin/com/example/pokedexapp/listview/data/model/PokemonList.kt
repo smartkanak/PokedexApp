@@ -15,13 +15,6 @@ data class PokemonList(
     @SerialName("results")
     val pokemonPointers: List<PokemonPointer>
 ) {
-    @Serializable
-    data class PokemonPointer(
-        @SerialName("name")
-        val name: String,
-        @SerialName("url")
-        val url: String
-    )
 
     companion object {
         fun empty() = PokemonList(
@@ -30,5 +23,26 @@ data class PokemonList(
             previous = null,
             pokemonPointers = emptyList()
         )
+    }
+
+    @Serializable
+    data class PokemonPointer(
+        @SerialName("name")
+        val name: String,
+        @SerialName("url")
+        val url: String
+    ) {
+
+        val id: Int
+            get() = extractPokemonId(url)
+
+        val image: String
+            get() = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png"
+
+        private fun extractPokemonId(url: String): Int {
+            // Extract the Pokemon ID from the URL
+            val parts = url.split("/")
+            return parts[parts.size - 2].toInt()
+        }
     }
 }
