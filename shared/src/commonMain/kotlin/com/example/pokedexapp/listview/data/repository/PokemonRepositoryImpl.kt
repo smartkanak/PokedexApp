@@ -2,6 +2,7 @@ package com.example.pokedexapp.listview.data.repository
 
 import com.example.pokedexapp.listview.data.api.PokemonListDto
 import com.example.pokedexapp.listview.data.model.Pokemon
+import com.example.pokedexapp.listview.data.utils.PokemonUtils
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -25,7 +26,7 @@ class PokemonRepositoryImpl : PokemonRepository {
             .body<PokemonListDto>()
 
         pokemonList = pokemonListDto.pokemonDtos.map { pokemonDto ->
-            Pokemon.fromDto(pokemonDto)
+            PokemonUtils.toPokemonFromDto(pokemonDto)
         }
 
         return pokemonList
