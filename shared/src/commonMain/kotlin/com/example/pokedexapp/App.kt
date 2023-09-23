@@ -14,8 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.pokedexapp.listview.data.model.PokemonList
 import com.example.pokedexapp.listview.ui.viewmodel.PokemonListViewModel
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
@@ -36,15 +36,21 @@ fun PokedexApp(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    AnimatedVisibility(uiState.pokemonList.pokemonPointers.isNotEmpty()) {
+    val gridPadding: Dp = 16.dp
+    AnimatedVisibility(uiState.pokemonList.isNotEmpty()) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = modifier.fillMaxSize().padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(gridPadding),
+            verticalArrangement = Arrangement.spacedBy(gridPadding),
+            modifier = modifier.fillMaxSize().padding(gridPadding),
             content = {
-                items(uiState.pokemonList.pokemonPointers) {
-                    PokemonCard(it)
+                items(uiState.pokemonList) { pokemon ->
+                    PokemonCard(
+                        imageUrl = pokemon.imageUrl,
+                        name = pokemon.name,
+                        id = pokemon.idWithLeadingZeros,
+                        detailedUrl = pokemon.detailedUrl
+                    )
                 }
             }
         )
@@ -52,13 +58,18 @@ fun PokedexApp(
 }
 
 @Composable
-fun PokemonCard(pokemon: PokemonList.PokemonPointer) {
+fun PokemonCard(
+    imageUrl: String,
+    name: String,
+    id: String,
+    detailedUrl: String,
+) {
     Column {
-        Text(pokemon.name)
-        Text(pokemon.url)
-        Text(pokemon.id.toString())
+        Text(name)
+        Text(detailedUrl)
+        Text(id)
         KamelImage(
-            asyncPainterResource(pokemon.image),
+            asyncPainterResource(imageUrl),
             contentDescription = "Pokemon image"
         )
     }
