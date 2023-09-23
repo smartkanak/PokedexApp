@@ -13,7 +13,7 @@ data class Pokemon(
             val id: Int = extractPokemonId(dto.url)
             return Pokemon(
                 id = id,
-                name = dto.name,
+                name = capitalize(dto.name),
                 imageUrl = getImageUrl(id),
                 detailedUrl = dto.url
             )
@@ -28,9 +28,13 @@ data class Pokemon(
         private fun getImageUrl(id: Int): String {
             return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png"
         }
+
+        private fun capitalize(str: String): String {
+            return str.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+        }
     }
 
     val idWithLeadingZeros: String
-        get() = id.toString().padStart(4, '0')
+        get() = id.toString().padStart(3, '0')
 }
 
