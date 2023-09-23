@@ -1,18 +1,23 @@
 package com.example.pokedexapp.listview.data.utils
 
+import androidx.compose.ui.graphics.ImageBitmap
 import com.example.pokedexapp.listview.data.api.PokemonListDto
 import com.example.pokedexapp.listview.data.model.Pokemon
+import kotlin.reflect.KSuspendFunction1
 
 
 object PokemonUtils {
 
-    fun toPokemonFromDto(dto: PokemonListDto.PokemonDto): Pokemon {
+    suspend fun toPokemonFromDto(
+        dto: PokemonListDto.PokemonDto,
+        loadImage: KSuspendFunction1<String, ImageBitmap?>,
+    ): Pokemon {
         val id: Int = extractPokemonId(dto.url)
 
         return Pokemon(
             id = idWithLeadingZeros(id),
             name = capitalize(dto.name),
-            imageUrl = getImageUrl(id),
+            image = loadImage(getImageUrl(id)),
             detailedUrl = dto.url
         )
     }
