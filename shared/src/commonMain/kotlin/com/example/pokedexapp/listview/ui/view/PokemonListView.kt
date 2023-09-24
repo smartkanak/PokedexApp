@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -43,6 +44,7 @@ fun PokemonListView(viewModel: PokemonListViewModel, modifier: Modifier) {
                     imageBitmap = pokemon.image,
                     name = pokemon.name,
                     id = pokemon.id,
+                    bgColor = pokemon.backgroundColor,
                 )
             }
         }
@@ -52,12 +54,14 @@ fun PokemonListView(viewModel: PokemonListViewModel, modifier: Modifier) {
 @Composable
 fun PokemonCard(
     imageBitmap: ImageBitmap?,
+    bgColor: Color?,
     name: String,
     id: String,
 ) {
 
     Card(
         shape = RoundedCornerShape(16.dp),
+        backgroundColor = bgColor ?: MaterialTheme.colors.primary,
     ) {
         Column(
             modifier = Modifier.padding(16.dp)

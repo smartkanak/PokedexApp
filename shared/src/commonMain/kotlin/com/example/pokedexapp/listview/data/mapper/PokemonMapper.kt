@@ -1,24 +1,28 @@
-package com.example.pokedexapp.listview.data.utils
+package com.example.pokedexapp.listview.data.mapper
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import com.example.pokedexapp.listview.data.api.PokemonListDto
 import com.example.pokedexapp.listview.data.model.Pokemon
-import kotlin.reflect.KSuspendFunction1
+import com.example.pokedexapp.utils.ColorExtractor
 
 
-object PokemonUtils {
+object PokemonMapper {
 
     suspend fun toPokemonFromDto(
         dto: PokemonListDto.PokemonDto,
-        loadImage: KSuspendFunction1<String, ImageBitmap?>,
+        loadImage: suspend (String) -> ImageBitmap?,
     ): Pokemon {
         val id: Int = extractPokemonId(dto.url)
+        val image: ImageBitmap? = loadImage(getImageUrl(id))
+        val backgroundColor: Color? = ColorExtractor.forBgFromImage(image)
 
         return Pokemon(
             id = idWithLeadingZeros(id),
             name = capitalize(dto.name),
-            image = loadImage(getImageUrl(id)),
-            detailedUrl = dto.url
+            image = image,
+            detailedUrl = dto.url,
+            backgroundColor = backgroundColor,
         )
     }
 

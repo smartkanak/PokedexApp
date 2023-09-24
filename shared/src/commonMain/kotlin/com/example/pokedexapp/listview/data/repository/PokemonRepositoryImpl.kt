@@ -3,7 +3,7 @@ package com.example.pokedexapp.listview.data.repository
 import androidx.compose.ui.graphics.ImageBitmap
 import com.example.pokedexapp.listview.data.api.PokemonListDto
 import com.example.pokedexapp.listview.data.model.Pokemon
-import com.example.pokedexapp.listview.data.utils.PokemonUtils
+import com.example.pokedexapp.listview.data.mapper.PokemonMapper
 import com.kmpalette.loader.NetworkLoader
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -26,7 +26,7 @@ class PokemonRepositoryImpl(
             .body<PokemonListDto>()
 
         pokemonList = pokemonListDto.pokemonDtos.map { pokemonDto ->
-            PokemonUtils.toPokemonFromDto(pokemonDto, ::loadImage)
+            PokemonMapper.toPokemonFromDto(pokemonDto, ::loadImage)
         }
 
         return pokemonList
