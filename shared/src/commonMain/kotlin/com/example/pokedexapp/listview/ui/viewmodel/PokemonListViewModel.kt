@@ -40,7 +40,10 @@ class PokemonListViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    println("nope")
+                    println("Error: ${e.message}")
+                    _uiState.update {
+                        it.copy(isLoading = false)
+                    }
                 }
             }
         }

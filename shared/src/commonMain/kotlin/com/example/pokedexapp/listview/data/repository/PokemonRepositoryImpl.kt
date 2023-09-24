@@ -12,17 +12,12 @@ import io.ktor.client.request.get
 import io.ktor.http.Url
 import io.ktor.serialization.kotlinx.json.json
 
-class PokemonRepositoryImpl : PokemonRepository {
+class PokemonRepositoryImpl(
+    private val httpClient: HttpClient = HttpClient { install(ContentNegotiation) { json() } },
+    private val loader: NetworkLoader = NetworkLoader()
+) : PokemonRepository {
 
     private var pokemonList: List<Pokemon> = emptyList()
-
-    private val loader: NetworkLoader = NetworkLoader()
-
-    private val httpClient = HttpClient() {
-        install(ContentNegotiation) {
-            json()
-        }
-    }
 
     override suspend fun getPokemonList(): List<Pokemon> {
 
@@ -37,6 +32,10 @@ class PokemonRepositoryImpl : PokemonRepository {
         return pokemonList
     }
 
+    override fun closeHttpClient() {
+        httpClient.close()
+    }
+
     private suspend fun loadImage(urlStr: String): ImageBitmap? {
         val url = Url(urlStr)
         var imageBitmap: ImageBitmap? = null
@@ -46,9 +45,5 @@ class PokemonRepositoryImpl : PokemonRepository {
             cause.printStackTrace()
         }
         return imageBitmap
-    }
-
-    override fun closeHttpClient() {
-        httpClient.close()
     }
 }
