@@ -2,17 +2,26 @@ package com.example.pokedexapp.utils
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.palette.graphics.Palette
+import androidx.compose.ui.graphics.toPixelMap
 
 object ColorExtractor {
 
     fun forBgFromImage(image: ImageBitmap?): Color? {
-        val palette: Palette? = image?.let { Palette.from(it).generate() }
-        val dominantColor: Int? = palette?.dominantSwatch?.rgb
+        val dominantColor: Int? = extractDominantColor(image)
         val lightenedColor = dominantColor?.let { lightenColor(it) }
         val backgroundColor = lightenedColor?.let { Color(it) }
 
         return backgroundColor
+    }
+
+    private fun extractDominantColor(image: ImageBitmap?): Int? {
+        val colorBuffer: IntArray? = image?.toPixelMap()?.buffer
+        val filteredBuffer = colorBuffer?.filter { pixel ->
+            pixel !in setOf<Int>(0, -1, -16777216) // filter out black, white and transparent
+        }?.toIntArray()
+        // look for most used color in filteredBuffer:
+        val colorToCountMap: Map<Int, Int> = filteredBuffer?.groupBy { it }?.mapValues { it.value.size } ?: emptyMap()
+        return colorToCountMap.maxByOrNull { it.value }?.key
     }
 
     private fun lightenColor(color: Int, maxLightness: Float = 200f, factor: Float = 0.4f): Int {

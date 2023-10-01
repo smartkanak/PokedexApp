@@ -61,7 +61,7 @@ fun PokemonCard(
 
     Card(
         shape = RoundedCornerShape(16.dp),
-        backgroundColor = bgColor ?: MaterialTheme.colors.primary,
+        backgroundColor = bgColor ?: MaterialTheme.colors.surface,
     ) {
         Column(
             modifier = Modifier.padding(16.dp)

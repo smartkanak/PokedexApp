@@ -22,7 +22,7 @@ class PokemonRepositoryImpl(
     override suspend fun getPokemonList(): List<Pokemon> {
 
         val pokemonListDto = httpClient
-            .get("https://pokeapi.co/api/v2/pokemon")
+            .get("https://pokeapi.co/api/v2/pokemon?limit=20")
             .body<PokemonListDto>()
 
         pokemonList = pokemonListDto.pokemonDtos.map { pokemonDto ->
