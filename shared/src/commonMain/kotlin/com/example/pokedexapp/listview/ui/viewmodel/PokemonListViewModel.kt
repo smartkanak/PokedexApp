@@ -24,14 +24,34 @@ class PokemonListViewModel : ViewModel() {
     private val repo: PokemonRepository = PokemonRepositoryImpl()
 
     init {
-        updatePokemonList()
+        initPokemonList()
     }
 
     override fun onCleared() {
         repo.closeHttpClient()
     }
 
-    private fun updatePokemonList() {
+    fun loadNextPage() {
+        _uiState.update { it.copy(isLoading = true) }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _uiState.update {
+                    val nextPokemonList: List<Pokemon> = repo.loadNextPage()
+                    it.copy(isLoading = false, pokemonList = it.pokemonList + nextPokemonList)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    println("Error: ${e.message}")
+                    _uiState.update {
+                        it.copy(isLoading = false)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun initPokemonList() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _uiState.update {

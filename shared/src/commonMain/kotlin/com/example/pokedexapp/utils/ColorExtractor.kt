@@ -6,22 +6,20 @@ import androidx.compose.ui.graphics.toPixelMap
 
 object ColorExtractor {
 
-    fun forBgFromImage(image: ImageBitmap?): Color? {
-        val dominantColor: Int? = extractDominantColor(image)
-        val lightenedColor = dominantColor?.let { lightenColor(it) }
-        val backgroundColor = lightenedColor?.let { Color(it) }
-
-        return backgroundColor
+    fun getBgColorFromImage(image: ImageBitmap?): Color {
+        if (image == null) return Color(0)
+        val colorBuffer: IntArray = image.toPixelMap().buffer
+        val dominantColor = extractDominantColor(colorBuffer)
+        val lightenedColor = lightenColor(dominantColor)
+        return Color(lightenedColor)
     }
 
-    private fun extractDominantColor(image: ImageBitmap?): Int? {
-        val colorBuffer: IntArray? = image?.toPixelMap()?.buffer
-        val filteredBuffer = colorBuffer?.filter { pixel ->
-            pixel !in setOf<Int>(0, -1, -16777216) // filter out black, white and transparent
-        }?.toIntArray()
-        // look for most used color in filteredBuffer:
-        val colorToCountMap: Map<Int, Int> = filteredBuffer?.groupBy { it }?.mapValues { it.value.size } ?: emptyMap()
-        return colorToCountMap.maxByOrNull { it.value }?.key
+    private fun extractDominantColor(colorBuffer: IntArray): Int {
+        val filtered: IntArray = colorBuffer.filter { pixel ->
+            pixel !in setOf(0, -1, -16777216) // filter out black, white and transparent
+        }.toIntArray()
+        val colorToCountMap: Map<Int, Int> = filtered.groupBy { it }.mapValues { it.value.size }
+        return colorToCountMap.maxBy { it.value }.key
     }
 
     private fun lightenColor(color: Int, maxLightness: Float = 200f, factor: Float = 0.4f): Int {

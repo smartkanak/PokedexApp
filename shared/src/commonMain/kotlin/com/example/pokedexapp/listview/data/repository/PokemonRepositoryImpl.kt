@@ -14,22 +14,31 @@ import io.ktor.serialization.kotlinx.json.json
 
 class PokemonRepositoryImpl(
     private val httpClient: HttpClient = HttpClient { install(ContentNegotiation) { json() } },
-    private val loader: NetworkLoader = NetworkLoader()
+    private val loader: NetworkLoader = NetworkLoader(),
 ) : PokemonRepository {
 
-    private var pokemonList: List<Pokemon> = emptyList()
+    private var pokemonList: MutableList<Pokemon> = mutableListOf()
+    private var currentUrl: String = "https://pokeapi.co/api/v2/pokemon?limit=20"
+    private var nextUrl: String? = null
 
     override suspend fun getPokemonList(): List<Pokemon> {
-
         val pokemonListDto = httpClient
-            .get("https://pokeapi.co/api/v2/pokemon?limit=20")
+            .get(currentUrl)
             .body<PokemonListDto>()
 
-        pokemonList = pokemonListDto.pokemonDtos.map { pokemonDto ->
+        nextUrl = pokemonListDto.next
+        val fetchedList: List<Pokemon> = pokemonListDto.pokemonDtos.map { pokemonDto ->
             PokemonMapper.toPokemonFromDto(pokemonDto, ::loadImage)
         }
 
+        pokemonList = fetchedList.toMutableList()
+
         return pokemonList
+    }
+
+    override suspend fun loadNextPage(): List<Pokemon> {
+        currentUrl = nextUrl ?: return emptyList()
+        return getPokemonList()
     }
 
     override fun closeHttpClient() {

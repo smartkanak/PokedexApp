@@ -15,7 +15,7 @@ object PokemonMapper {
     ): Pokemon {
         val id: Int = extractPokemonId(dto.url)
         val image: ImageBitmap? = loadImage(getImageUrl(id))
-        val backgroundColor: Color? = ColorExtractor.forBgFromImage(image)
+        val backgroundColor: Color = ColorExtractor.getBgColorFromImage(image)
 
         return Pokemon(
             id = idWithLeadingZeros(id),
