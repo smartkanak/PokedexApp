@@ -37,8 +37,8 @@ class PokemonListViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _uiState.update {
-                    val nextPokemonList: List<Pokemon> = repo.loadNextPage()
-                    it.copy(isLoading = false, pokemonList = it.pokemonList + nextPokemonList)
+                    val pokemonList: List<Pokemon> = repo.loadNextPage()
+                    it.copy(isLoading = false, pokemonList = pokemonList)
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {

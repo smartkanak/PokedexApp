@@ -31,7 +31,7 @@ class PokemonRepositoryImpl(
             PokemonMapper.toPokemonFromDto(pokemonDto, ::loadImage)
         }
 
-        pokemonList = fetchedList.toMutableList()
+        pokemonList.addAll(fetchedList)
 
         return pokemonList
     }
